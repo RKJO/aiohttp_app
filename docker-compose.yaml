@@ -1,0 +1,37 @@
+services:
+  backend:
+    container_name: aiohttp_server
+    build: ./backend
+    ports:
+      - "8080:8080"
+    restart: "on-failure"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/env/.env
+#    depends_on:
+#      - db-postgres
+#    networks:
+#      - backend-network
+#      - db-postgres-network
+
+#  db-postgres:
+#    container_name: postgres_aio
+#    image: postgres
+#    ports:
+#      - "5434:5432"
+#    env_file:
+#      - ./rest_api/env/.env
+#    volumes:
+#      - postgres-aio:/var/lib/postgresql/data
+#    networks:
+#      - db-postgres-network
+#
+#volumes:
+#  postgres-aio:
+#
+#networks:
+#  backend-network:
+#    driver: bridge
+#  db-postgres-network:
+#    driver: bridge
