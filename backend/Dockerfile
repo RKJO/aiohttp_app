@@ -8,6 +8,3 @@ RUN pip install -r requirements.txt
 COPY . .
 # CMD python -m aiohttp.web -H localhost -P 8080 main.py
 CMD python main.py
-
-
-

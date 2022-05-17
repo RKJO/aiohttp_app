@@ -1,4 +1,17 @@
 services:
+  db-postgres:
+    container_name: postgres_aio
+    #    hostname: db-postgres
+    image: postgres
+    ports:
+      - "5434:5432"
+    env_file:
+      - ./backend/env/.env
+    volumes:
+      - postgres-aio:/var/lib/postgresql/data
+    networks:
+      - db-postgres-network
+
   backend:
     container_name: aiohttp_server
     build: ./backend
@@ -9,29 +22,30 @@ services:
       - ./backend:/app
     env_file:
       - ./backend/env/.env
-#    depends_on:
-#      - db-postgres
-#    networks:
-#      - backend-network
-#      - db-postgres-network
+    depends_on:
+      - db-postgres
+    networks:
+      - backend-network
+      - db-postgres-network
 
-#  db-postgres:
-#    container_name: postgres_aio
-#    image: postgres
-#    ports:
-#      - "5434:5432"
-#    env_file:
-#      - ./rest_api/env/.env
-#    volumes:
-#      - postgres-aio:/var/lib/postgresql/data
-#    networks:
-#      - db-postgres-network
-#
-#volumes:
-#  postgres-aio:
-#
-#networks:
-#  backend-network:
-#    driver: bridge
-#  db-postgres-network:
-#    driver: bridge
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db-postgres
+    ports:
+      - "5555:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    restart: unless-stopped
+    networks:
+      - db-postgres-network
+
+volumes:
+  postgres-aio:
+
+networks:
+  backend-network:
+    driver: bridge
+  db-postgres-network:
+    driver: bridge

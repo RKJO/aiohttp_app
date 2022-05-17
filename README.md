@@ -9,4 +9,10 @@
 docker compose up --build
 ```
 
-3. it runs on localhost:8080
+3. in run 
+```bash
+python init_db.py
+```
+
+
+4. it runs on localhost:8080
