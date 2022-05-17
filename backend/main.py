@@ -1,6 +1,6 @@
 from aiohttp import web
 
-# from aiohttp_demo.db import init_db
+from db_connection.db_service import pg_context
 from aiohttp_demo.routes import setup_routes
 
 
@@ -8,9 +8,11 @@ async def init_app():
 
     app = web.Application()
 
-    setup_routes(app)
+    # create db connection on startup, shutdown on exit
+    app.cleanup_ctx.append(pg_context)
 
-    # db_pool = await init_db(app)
+    # setup views and routes
+    setup_routes(app)
 
     return app
 
