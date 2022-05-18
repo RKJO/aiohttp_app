@@ -15,17 +15,14 @@ async def get_user(request):
         return web.Response(body=json.dumps(results), status=200)
 
 
-# async def create_user(request):
-#     try:
-#         user_id = request.match_info['user_id']
-#
-#         return web.Response(
-#             text=f'user id {user_id}',
-#             status=200
-#         )
-#
-#     except Exception as e:
-#         response_obj = {
-#             'status': 'failed', 'message': str(e)
-#         }
-#         return web.Response(text=json.dumps(response_obj), status=200)
+async def create_user(request):
+    async with request.app['db'].acquire() as conn:
+        user_name = request.query['user_name']
+        try:
+            new_user = await db_service.create_user(conn, user_name)
+
+        except (KeyError, TypeError, ValueError) as e:
+            raise web.HTTPBadRequest(
+                text='You have not specified proper value') from e
+        result = [dict(row) for row in new_user]
+        return web.Response(text=json.dumps(result[0]), status=200)

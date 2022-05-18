@@ -58,5 +58,7 @@ async def get_user(conn, user_id):
 
 
 async def create_user(conn, user_name):
-    created_user = user.insert().values(user_name=user_name)
-    await conn.execute(created_user)
+    user_to_create = user.insert().values(user_name=user_name)
+    created_user = await conn.execute(user_to_create)
+    new_user = await created_user.fetchall()
+    return new_user
