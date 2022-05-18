@@ -15,10 +15,15 @@ python init_db.py
 ```
 
 ## API endpoints
-
 ### GET
 `get user` http://localhost:8080/get_user/{id}
 
 ### POST
 `create user` http://localhost:8080/create_user?user_name={username}
 
+
+## UI
+### pgadmin4
+`available on` http://localhost:5555
+### RabbitMQ HTTP management UI
+`available on` http://localhost:15672

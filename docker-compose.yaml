@@ -1,17 +1,4 @@
 services:
-  db-postgres:
-    container_name: postgres_aio
-    #    hostname: db-postgres
-    image: postgres
-    ports:
-      - "5434:5432"
-    env_file:
-      - ./backend/env/.env
-    volumes:
-      - postgres-aio:/var/lib/postgresql/data
-    networks:
-      - db-postgres-network
-
   backend:
     container_name: aiohttp_server
     build: ./backend
@@ -26,6 +13,33 @@ services:
       - db-postgres
     networks:
       - backend-network
+      - rabbitmq-network
+      - db-postgres-network
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.8-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=myuser
+      - RABBITMQ_DEFAULT_PASS=mypassword
+    ports:
+      # AMQP protocol port
+      - '5672:5672'
+      # HTTP management UI
+      - '15672:15672'
+    networks:
+      - rabbitmq-network
+
+  db-postgres:
+    container_name: postgres_aio
+    image: postgres
+    ports:
+      - "5434:5432"
+    env_file:
+      - ./backend/env/.env
+    volumes:
+      - postgres-aio:/var/lib/postgresql/data
+    networks:
       - db-postgres-network
 
   pgadmin:
@@ -46,6 +60,8 @@ volumes:
 
 networks:
   backend-network:
+    driver: bridge
+  rabbitmq-network:
     driver: bridge
   db-postgres-network:
     driver: bridge
